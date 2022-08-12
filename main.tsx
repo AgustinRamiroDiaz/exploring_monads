@@ -106,7 +106,7 @@ function notSoHappyPath() {
   }
 }
 
-function notSoHappyPath() {
+function monadPath() {
   function splitInTwoByComma(input: string): Maybe<[string, string]> {
     const splitted = input.split(",");
     if (splitted.length === 2) {
