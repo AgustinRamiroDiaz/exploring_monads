@@ -136,6 +136,9 @@ function monadPath() {
   const result = new Just(initialValue)
     .then(splitInTwoByComma)
     .then(toInt)
-    .then(divideTwoNumbers);
-  console.log(result);
+    .then(divideTwoNumbers)
+    .caseOf({
+      Just: (x) => console.log(x),
+      Nothing: () => console.log("whoops None"),
+    });
 }
