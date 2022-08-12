@@ -3,7 +3,6 @@ var Just = /** @class */ (function () {
         this.value = value;
     }
     Just.prototype.then = function (f) {
-        console.log(this.value);
         return f(this.value);
     };
     Just.prototype.caseOf = function (cases) {
@@ -15,7 +14,6 @@ var Nothing = /** @class */ (function () {
     function Nothing() {
     }
     Nothing.prototype.then = function (f) {
-        console.log("None");
         return new Nothing();
     };
     Nothing.prototype.caseOf = function (cases) {
@@ -34,3 +32,52 @@ var x = new Just(1)
     Just: function (x) { return console.log("Finished with " + x); },
     Nothing: function () { return console.log("whoops None"); }
 });
+function happyPath() {
+    function splitInTwoByComma(input) {
+        var splitted = input.split(",");
+        return [splitted[0], splitted[1]];
+    }
+    function toupleStringToInt(_a) {
+        var a = _a[0], b = _a[1];
+        return [parseInt(a), parseInt(b)];
+    }
+    function divideTwoNumbers(_a) {
+        var a = _a[0], b = _a[1];
+        return a / b;
+    }
+    var initialValue = "1,1";
+    var splitted = splitInTwoByComma(initialValue);
+    var numbers = toupleStringToInt(splitted);
+    var result = divideTwoNumbers(numbers);
+    console.log(result);
+}
+happyPath();
+function notSoHappyPath() {
+    function splitInTwoByComma(input) {
+        var splitted = input.split(",");
+        if (splitted.length === 2) {
+            return new Just([splitted[0], splitted[1]]);
+        }
+        else {
+            return new Nothing();
+        }
+    }
+    function toInt(_a) {
+        var a = _a[0], b = _a[1];
+        if (isNaN(parseInt(a)) || isNaN(parseInt(b))) {
+            return new Nothing();
+        }
+        else {
+            return new Just([parseInt(a), parseInt(b)]);
+        }
+    }
+    function divideTwoNumbers(_a) {
+        var a = _a[0], b = _a[1];
+        return a / b;
+    }
+    var initialValue = "1,1";
+    var splitted = splitInTwoByComma(initialValue);
+    var numbers = toInt(splitted);
+    var result = divideTwoNumbers(numbers);
+    console.log(result);
+}
