@@ -3,11 +3,17 @@
 ## Run haskell example
 
 ```sh
-runhaskell haskell.hs
+runhaskell haskell/main.hs
 ```
 
 ## Run typescript example
 
 ```sh
-deno run main.tsx
+deno run ts/main.tsx
+```
+
+## Run go example
+
+```sh
+go run go/main.go
 ```
