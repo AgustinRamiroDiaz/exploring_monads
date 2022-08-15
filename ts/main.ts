@@ -128,3 +128,76 @@ function monadPath() {
       Nothing: () => console.log("whoops None"),
     });
 }
+
+// lift
+function fmap<A, B>(f: (a: A) => B): (ma: Maybe<A>) => Maybe<B> {
+  return (maybe: Maybe<A>) => {
+    return maybe.caseOf({
+      Just: (a) => new Just(f(a)),
+      Nothing: () => new Nothing(),
+    });
+  };
+}
+
+function join<A>(mma: Maybe<Maybe<A>>): Maybe<A> {
+  // flat
+  return mma.caseOf({
+    Just: (ma) => ma,
+    Nothing: () => new Nothing(),
+  });
+}
+
+function joinAfter<A>(f: (a: A) => Maybe<Maybe<A>>): (a: A) => Maybe<A> {
+  return (a) => join(f(a));
+}
+
+function kleisli<A, B, C>( // kleisli arrow, fish operator >=>
+  f: (a: A) => Maybe<B>,
+  g: (b: B) => Maybe<C>
+): (ma: A) => Maybe<C> {
+  return (a: A) => {
+    return f(a).bind(g);
+  };
+}
+
+function compose<A, B, C>(f: (a: A) => B, g: (b: B) => C): (a: A) => C {
+  return (a: A) => g(f(a));
+}
+
+function experiments() {
+  const a = compose(
+    (x: number) => new Just(x * 2),
+    fmap((x) => x * 2)
+  );
+
+  const z = compose<number, Maybe<number>, Maybe<Maybe<number>>>(
+    (x: number) => new Just(x * 2),
+    fmap((x: number) => new Just(x * 2))
+  );
+
+  const x = new Just(1)
+    .bind(
+      kleisli(
+        compose(
+          (x: number) => new Just(x * 2),
+          fmap((x: number) => x * 2)
+        ),
+        (x) => new Just(x + 1)
+      )
+    )
+    .bind(
+      kleisli(
+        joinAfter<number>(
+          compose<number, Maybe<number>, Maybe<Maybe<number>>>(
+            (x: number) => new Just(x * 2),
+            fmap((x: number) => new Just(x * 2))
+          )
+        ),
+        (x) => new Just(x + 1)
+      )
+    );
+
+  console.log(x);
+}
+
+experiments();
