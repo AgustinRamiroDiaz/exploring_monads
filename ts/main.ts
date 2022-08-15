@@ -129,6 +129,11 @@ function monadPath() {
     });
 }
 
+// return
+function unit<A>(a: A): Maybe<A> {
+  return new Just(a);
+}
+
 // lift
 function fmap<A, B>(f: (a: A) => B): (ma: Maybe<A>) => Maybe<B> {
   return (maybe: Maybe<A>) => {
