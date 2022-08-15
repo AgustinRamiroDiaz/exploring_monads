@@ -1,5 +1,5 @@
 interface Maybe<A> {
-  then<B>(f: (a: A) => Maybe<B>): Maybe<B>;
+  bind<B>(f: (a: A) => Maybe<B>): Maybe<B>; // >>=
   caseOf<B>(cases: { Just: (a: A) => B; Nothing: () => B }): B;
 }
 
@@ -8,7 +8,7 @@ class Just<A> implements Maybe<A> {
   constructor(value: A) {
     this.value = value;
   }
-  then<B>(f: (a: A) => Maybe<B>): Maybe<B> {
+  bind<B>(f: (a: A) => Maybe<B>): Maybe<B> {
     return f(this.value);
   }
   caseOf<B>(cases: { Just: (a: A) => B; Nothing: () => B }): B {
@@ -17,7 +17,7 @@ class Just<A> implements Maybe<A> {
 }
 
 class Nothing implements Maybe<any> {
-  then<B>(f: (a: any) => Maybe<B>): Maybe<B> {
+  bind<B>(f: (a: any) => Maybe<B>): Maybe<B> {
     return new Nothing();
   }
   caseOf<B>(cases: { Just: (a: any) => B; Nothing: () => B }): B {
@@ -25,13 +25,13 @@ class Nothing implements Maybe<any> {
   }
 }
 
-let x = new Just(1)
-  .then((x) => new Just(x + 1))
-  .then((x) => new Just("x:" + x))
-  .then((x) => new Nothing())
-  .then((x: number) => new Just(x + 1))
-  .then((x) => new Nothing())
-  .then((x: string) => new Just(x + "1"))
+const x = new Just(1)
+  .bind((x) => new Just(x + 1))
+  .bind((x) => new Just("x:" + x))
+  .bind((x) => new Nothing())
+  .bind((x: number) => new Just(x + 1))
+  .bind((x) => new Nothing())
+  .bind((x: string) => new Just(x + "1"))
   .caseOf({
     Just: (x) => console.log("Finished with " + x),
     Nothing: () => console.log("whoops None"),
@@ -134,9 +134,9 @@ function monadPath() {
 
   const initialValue = "1,1";
   const result = new Just(initialValue)
-    .then(splitInTwoByComma)
-    .then(toInt)
-    .then(divideTwoNumbers)
+    .bind(splitInTwoByComma)
+    .bind(toInt)
+    .bind(divideTwoNumbers)
     .caseOf({
       Just: (x) => console.log(x),
       Nothing: () => console.log("whoops None"),

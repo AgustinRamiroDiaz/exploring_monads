@@ -2,7 +2,7 @@ var Just = /** @class */ (function () {
     function Just(value) {
         this.value = value;
     }
-    Just.prototype.then = function (f) {
+    Just.prototype.bind = function (f) {
         return f(this.value);
     };
     Just.prototype.caseOf = function (cases) {
@@ -13,7 +13,7 @@ var Just = /** @class */ (function () {
 var Nothing = /** @class */ (function () {
     function Nothing() {
     }
-    Nothing.prototype.then = function (f) {
+    Nothing.prototype.bind = function (f) {
         return new Nothing();
     };
     Nothing.prototype.caseOf = function (cases) {
@@ -22,12 +22,12 @@ var Nothing = /** @class */ (function () {
     return Nothing;
 }());
 var x = new Just(1)
-    .then(function (x) { return new Just(x + 1); })
-    .then(function (x) { return new Just("x:" + x); })
-    .then(function (x) { return new Nothing(); })
-    .then(function (x) { return new Just(x + 1); })
-    .then(function (x) { return new Nothing(); })
-    .then(function (x) { return new Just(x + "1"); })
+    .bind(function (x) { return new Just(x + 1); })
+    .bind(function (x) { return new Just("x:" + x); })
+    .bind(function (x) { return new Nothing(); })
+    .bind(function (x) { return new Just(x + 1); })
+    .bind(function (x) { return new Nothing(); })
+    .bind(function (x) { return new Just(x + "1"); })
     .caseOf({
     Just: function (x) { return console.log("Finished with " + x); },
     Nothing: function () { return console.log("whoops None"); }
@@ -73,11 +73,69 @@ function notSoHappyPath() {
     }
     function divideTwoNumbers(_a) {
         var a = _a[0], b = _a[1];
-        return a / b;
+        if (b === 0) {
+            return new Nothing();
+        }
+        else {
+            return new Just(a / b);
+        }
     }
     var initialValue = "1,1";
     var splitted = splitInTwoByComma(initialValue);
-    var numbers = toInt(splitted);
-    var result = divideTwoNumbers(numbers);
-    console.log(result);
+    if (splitted instanceof Just) {
+        var numbers = toInt(splitted.value);
+        if (numbers instanceof Just) {
+            var result = divideTwoNumbers(numbers.value);
+            if (result instanceof Just) {
+                console.log(result.value);
+            }
+            else {
+                console.log("whoops None");
+            }
+        }
+        else {
+            console.log("whoops None");
+        }
+    }
+    else {
+        console.log("whoops None");
+    }
+}
+function monadPath() {
+    function splitInTwoByComma(input) {
+        var splitted = input.split(",");
+        if (splitted.length === 2) {
+            return new Just([splitted[0], splitted[1]]);
+        }
+        else {
+            return new Nothing();
+        }
+    }
+    function toInt(_a) {
+        var a = _a[0], b = _a[1];
+        if (isNaN(parseInt(a)) || isNaN(parseInt(b))) {
+            return new Nothing();
+        }
+        else {
+            return new Just([parseInt(a), parseInt(b)]);
+        }
+    }
+    function divideTwoNumbers(_a) {
+        var a = _a[0], b = _a[1];
+        if (b === 0) {
+            return new Nothing();
+        }
+        else {
+            return new Just(a / b);
+        }
+    }
+    var initialValue = "1,1";
+    var result = new Just(initialValue)
+        .bind(splitInTwoByComma)
+        .bind(toInt)
+        .bind(divideTwoNumbers)
+        .caseOf({
+        Just: function (x) { return console.log(x); },
+        Nothing: function () { return console.log("whoops None"); }
+    });
 }
