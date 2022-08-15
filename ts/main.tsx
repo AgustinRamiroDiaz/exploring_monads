@@ -25,18 +25,6 @@ class Nothing implements Maybe<any> {
   }
 }
 
-const x = new Just(1)
-  .bind((x) => new Just(x + 1))
-  .bind((x) => new Just("x:" + x))
-  .bind((x) => new Nothing())
-  .bind((x: number) => new Just(x + 1))
-  .bind((x) => new Nothing())
-  .bind((x: string) => new Just(x + "1"))
-  .caseOf({
-    Just: (x) => console.log("Finished with " + x),
-    Nothing: () => console.log("whoops None"),
-  });
-
 function happyPath() {
   function splitInTwoByComma(input: string): [string, string] {
     const splitted = input.split(",");
@@ -58,8 +46,6 @@ function happyPath() {
 
   console.log(result);
 }
-
-happyPath();
 
 function notSoHappyPath() {
   function splitInTwoByComma(input: string): Maybe<[string, string]> {
