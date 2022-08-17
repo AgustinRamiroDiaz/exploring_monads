@@ -31,7 +31,7 @@ function happyPath() {
     return [splitted[0], splitted[1]];
   }
 
-  function toupleStringToInt([a, b]: [string, string]): [number, number] {
+  function toupleStringToNumber([a, b]: [string, string]): [number, number] {
     return [parseInt(a), parseInt(b)];
   }
 
@@ -39,12 +39,13 @@ function happyPath() {
     return a / b;
   }
 
-  const initialValue = "1,1";
-  const splitted = splitInTwoByComma(initialValue);
-  const numbers = toupleStringToInt(splitted);
-  const result = divideTwoNumbers(numbers);
+  function wholeProgram(input: string): number {
+    const splitted = splitInTwoByComma(input);
+    const numbers = toupleStringToNumber(splitted);
+    return divideTwoNumbers(numbers);
+  }
 
-  console.log(result);
+  console.log(wholeProgram("2,1"));
 }
 
 function notSoHappyPath() {
@@ -73,23 +74,27 @@ function notSoHappyPath() {
     }
   }
 
-  const initialValue = "1,1";
-  const splitted = splitInTwoByComma(initialValue);
-  if (splitted instanceof Just) {
-    const numbers = toInt(splitted.value);
-    if (numbers instanceof Just) {
-      const result = divideTwoNumbers(numbers.value);
-      if (result instanceof Just) {
-        console.log(result.value);
+  function wholeProgram(input: string): Maybe<number> {
+    const splitted = splitInTwoByComma(input);
+    if (splitted instanceof Just) {
+      const numbers = toInt(splitted.value);
+      if (numbers instanceof Just) {
+        const result = divideTwoNumbers(numbers.value);
+        if (result instanceof Just) {
+          return result;
+        } else {
+          return new Nothing();
+        }
       } else {
-        console.log("whoops None");
+        return new Nothing();
       }
     } else {
-      console.log("whoops None");
+      return new Nothing();
     }
-  } else {
-    console.log("whoops None");
   }
+
+  console.log(wholeProgram("1,3"));
+  console.log(wholeProgram("6,2"));
 }
 
 function monadPath() {
@@ -119,14 +124,22 @@ function monadPath() {
   }
 
   const initialValue = "1,1";
-  const result = new Just(initialValue)
+  function wholeProgram(input: string) : Maybe<number> {
+    return new Just(initialValue)
     .bind(splitInTwoByComma)
     .bind(toInt)
     .bind(divideTwoNumbers)
-    .caseOf({
-      Just: (x) => console.log(x),
-      Nothing: () => console.log("whoops None"),
-    });
+  }
+  
+  wholeProgram("4,2").caseOf({
+    Just: (x) => console.log(x),
+    Nothing: () => console.log("whoops None"),
+  });
+
+  wholeProgram("a,2").caseOf({
+    Just: (x) => console.log(x),
+    Nothing: () => console.log("whoops None"),
+  });
 }
 
 // return
