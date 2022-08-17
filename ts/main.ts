@@ -25,6 +25,13 @@ class Nothing implements Maybe<any> {
   }
 }
 
+function print<T>(m : Maybe<T>) {
+  m.caseOf({
+    Just: (x) => console.log("Just ", x),
+    Nothing: () => console.log("None"),
+  });
+}
+
 function happyPath() {
   function splitInTwoByComma(input: string): [string, string] {
     const splitted = input.split(",");
@@ -131,15 +138,9 @@ function monadPath() {
     .bind(divideTwoNumbers)
   }
   
-  wholeProgram("4,2").caseOf({
-    Just: (x) => console.log(x),
-    Nothing: () => console.log("whoops None"),
-  });
+  print(wholeProgram("4,2"));
 
-  wholeProgram("a,2").caseOf({
-    Just: (x) => console.log(x),
-    Nothing: () => console.log("whoops None"),
-  });
+  print(wholeProgram("a,2"));
 }
 
 // return
