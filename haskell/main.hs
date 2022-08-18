@@ -14,5 +14,6 @@ main = do
     let result = do
                     y <- plusOne 0
                     z <- (plusOne >=> plusOne) y
-                    return z
+                    w <- ((fmap ((+1) .(+1))) . plusOne) y
+                    return w
     print result
