@@ -1,3 +1,27 @@
+function happyPath() {
+  function splitInTwoByComma(input: string): [string, string] {
+    const splitted = input.split(",");
+    return [splitted[0], splitted[1]];
+  }
+
+  function toupleStringToNumber([a, b]: [string, string]): [number, number] {
+    return [parseInt(a), parseInt(b)];
+  }
+
+  function divideTwoNumbers([a, b]: [number, number]): number {
+    return a / b;
+  }
+
+  function wholeProgram(input: string): number {
+    const splitted = splitInTwoByComma(input);
+    const numbers = toupleStringToNumber(splitted);
+    return divideTwoNumbers(numbers);
+  }
+
+  console.log(wholeProgram("2,1"));
+}
+// happyPath();
+
 interface Maybe<A> {
   bind<B>(f: (a: A) => Maybe<B>): Maybe<B>; // >>=
   caseOf<B>(cases: { Just: (a: A) => B; Nothing: () => B }): B;
@@ -31,30 +55,6 @@ function print<T>(m: Maybe<T>) {
     Nothing: () => console.log("None"),
   });
 }
-
-function happyPath() {
-  function splitInTwoByComma(input: string): [string, string] {
-    const splitted = input.split(",");
-    return [splitted[0], splitted[1]];
-  }
-
-  function toupleStringToNumber([a, b]: [string, string]): [number, number] {
-    return [parseInt(a), parseInt(b)];
-  }
-
-  function divideTwoNumbers([a, b]: [number, number]): number {
-    return a / b;
-  }
-
-  function wholeProgram(input: string): number {
-    const splitted = splitInTwoByComma(input);
-    const numbers = toupleStringToNumber(splitted);
-    return divideTwoNumbers(numbers);
-  }
-
-  console.log(wholeProgram("2,1"));
-}
-// happyPath();
 
 function notSoHappyPath() {
   function splitInTwoByComma(input: string): Maybe<[string, string]> {
