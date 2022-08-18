@@ -54,6 +54,7 @@ function happyPath() {
 
   console.log(wholeProgram("2,1"));
 }
+// happyPath();
 
 function notSoHappyPath() {
   function splitInTwoByComma(input: string): Maybe<[string, string]> {
