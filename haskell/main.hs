@@ -6,17 +6,13 @@ plusOne x = Just (x + 1)
 nothing :: Integer -> Maybe Integer
 nothing _ = Nothing
 
-
-test :: Integer -> Maybe Integer
-test x = do 
-    y <- plusOne x
-    z <- plusOne y
-    return z
+(>=>) :: Monad m => (a -> m b) -> (b -> m c) -> (a -> m c)
+(>=>) f g x = f x >>= g
 
 main :: IO()
 main = do
     let result = do
                     y <- plusOne 0
-                    z <- plusOne y
+                    z <- (plusOne >=> plusOne) y
                     return z
     print result
