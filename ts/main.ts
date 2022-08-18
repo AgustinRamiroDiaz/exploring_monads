@@ -17,7 +17,7 @@ class Just<A> implements Maybe<A> {
 }
 
 class Nothing implements Maybe<any> {
-  bind<B>(f: (a: any) => Maybe<B>): Maybe<B> {
+  bind<B>(_: (a: any) => Maybe<B>): Maybe<B> {
     return new Nothing();
   }
   caseOf<B>(cases: { Just: (a: any) => B; Nothing: () => B }): B {
@@ -25,7 +25,7 @@ class Nothing implements Maybe<any> {
   }
 }
 
-function print<T>(m : Maybe<T>) {
+function print<T>(m: Maybe<T>) {
   m.caseOf({
     Just: (x) => console.log("Just ", x),
     Nothing: () => console.log("None"),
@@ -130,18 +130,18 @@ function monadPath() {
     }
   }
 
-  const initialValue = "1,1";
-  function wholeProgram(input: string) : Maybe<number> {
-    return new Just(initialValue)
-    .bind(splitInTwoByComma)
-    .bind(toInt)
-    .bind(divideTwoNumbers)
+  function wholeProgram(input: string): Maybe<number> {
+    return new Just(input)
+      .bind(splitInTwoByComma)
+      .bind(toInt)
+      .bind(divideTwoNumbers);
   }
-  
-  print(wholeProgram("4,2"));
 
-  print(wholeProgram("a,2"));
+  print(wholeProgram("10,5"));
+
+  print(wholeProgram("1,1,2"));
 }
+monadPath();
 
 // return
 function unit<A>(a: A): Maybe<A> {
@@ -184,17 +184,7 @@ function compose<A, B, C>(f: (a: A) => B, g: (b: B) => C): (a: A) => C {
 }
 
 function experiments() {
-  const a = compose(
-    (x: number) => new Just(x * 2),
-    fmap((x) => x * 2)
-  );
-
-  const z = compose<number, Maybe<number>, Maybe<Maybe<number>>>(
-    (x: number) => new Just(x * 2),
-    fmap((x: number) => new Just(x * 2))
-  );
-
-  const x = new Just(1)
+  const w = new Just(1)
     .bind(
       kleisli(
         compose(
@@ -216,7 +206,5 @@ function experiments() {
       )
     );
 
-  console.log(x);
+  console.log(w);
 }
-
-experiments();

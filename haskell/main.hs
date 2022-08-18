@@ -15,9 +15,8 @@ test x = do
 
 main :: IO()
 main = do
-    print (
-        do
-            y <- plusOne 0
-            z <- plusOne y
-            return z
-        )
+    let result = do
+                    y <- plusOne 0
+                    z <- plusOne y
+                    return z
+    print result
