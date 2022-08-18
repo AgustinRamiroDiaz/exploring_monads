@@ -3,27 +3,19 @@ package main
 import "fmt"
 
 func main() {
+
+	plusOne := func(a int) Result[int] { return newValue(a + 1) }
+	nope := func(a int) Result[int] { return newError[int](fmt.Errorf("nope")) }
+
 	x := newValue(1)
-	y := x.Then(func(a int) Result[int] {
-		return newValue(a + 1)
-	}).Then(func(a int) Result[int] {
-		return newError[int](fmt.Errorf("nope"))
-	}).Then(func(a int) Result[int] {
-		return newValue(a + 1)
-	})
+	y := x.Then(plusOne).Then(nope).Then(plusOne)
 
 	fmt.Println(y.String())
 
 	a := newValue(1)
-	b := then(a, func(a int) Result[int] {
-		return newValue(a + 1)
-	})
-	c := then(b, func(a int) Result[int] {
-		return newError[int](fmt.Errorf("nope"))
-	})
-	d := then(c, func(a int) Result[int] {
-		return newValue(a + 1)
-	})
+	b := then(a, plusOne)
+	c := then(b, nope)
+	d := then(c, plusOne)
 
 	fmt.Println(d.String())
 
