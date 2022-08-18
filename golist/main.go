@@ -23,6 +23,7 @@ func fmap[A, B any](f func(A) B) func([]A) []B {
 	}
 }
 
+// flatten
 func join[A any](listOfLists [][]A) (out []A) {
 	for _, list := range listOfLists {
 		out = append(out, list...)
@@ -30,6 +31,7 @@ func join[A any](listOfLists [][]A) (out []A) {
 	return
 }
 
+// flatmap
 func bind[A, B any](list []A, f func(A) []B) (out []B) {
 	liftedFunction := fmap(f)
 	listOfLists := liftedFunction(list)
