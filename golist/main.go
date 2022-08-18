@@ -5,9 +5,9 @@ import "fmt"
 func main() {
 	x := unit(10)
 	y := bind(x, func(a int) []int { return []int{a * 1, a * 2, a * 3} })
-	z := bind(y, func(a int) []int { return []int{a, a, a} })
+	z := bind(y, func(a int) []string { return []string{fmt.Sprint(a), fmt.Sprint(a)} })
 
-	fmt.Printf("%v\n", z)
+	fmt.Printf("%#v\n", z)
 }
 
 func unit[A any](value A) []A {
