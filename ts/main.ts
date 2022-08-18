@@ -141,7 +141,7 @@ function monadPath() {
 
   print(wholeProgram("1,1,2"));
 }
-monadPath();
+// monadPath();
 
 // return
 function unit<A>(a: A): Maybe<A> {
